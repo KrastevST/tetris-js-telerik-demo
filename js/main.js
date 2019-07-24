@@ -5,8 +5,6 @@ const TETRIS_CELL_SIZE = 32;
 const tetrisTable = Array.from({length: TETRIS_ROWS})
     .map(() => Array.from({length: TETRIS_COLS}).map(() => false));
 
-console.log(tetrisTable);
-
 let x = 10;
 let y = 10;
 
@@ -16,3 +14,10 @@ function update() {
 
 setInterval(update, 10);
 
+function getCellX(row) {
+    return TETRIS_CELL_SIZE * row;
+}
+
+function getCellY(col) {
+    return TETRIS_CELL_SIZE * col;
+}
