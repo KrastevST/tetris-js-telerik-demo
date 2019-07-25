@@ -31,7 +31,7 @@ let currentFigure = {
     col: 0
 }
 
-let gameSpeed = 100;
+let gameSpeed = 500;
 
 function getFigure() {
     const index = Math.random() * figures.length | 0;
@@ -40,19 +40,22 @@ function getFigure() {
     currentFigure.col = 0;
 }
 
-function update() {
-    let canFall = true
+function checkForCollision(offsetRow, offsetCol) {
     for (let i = 0; i < currentFigure.obj.cells.length; i += 1){
-        const row = currentFigure.row + i + 1;
+        const row = offsetRow + i;
         for (let j = 0; j < currentFigure.obj.cells[i].length; j += 1) {
-            const col = currentFigure.col + j;
+            const col = offsetCol + j;
 
             if (currentFigure.obj.cells[i][j] && tetrisTable[row][col]) {
-                canFall = false;
-                break;
+                return true;
             }
         }
     }
+    return false;
+}
+
+function update() {
+    let canFall = !checkForCollision(currentFigure.row + 1, currentFigure.col)
 
     if (canFall) {
         currentFigure.row += 1;
@@ -76,3 +79,18 @@ function update() {
 
 getFigure();
 update();
+
+window.addEventListener("keydown", function(ev) {
+    if (ev.key === "ArrowLeft") {
+        let canMove = currentFigure.col > 0 && !checkForCollision(currentFigure.row, currentFigure.col - 1);
+        if (canMove) {
+            currentFigure.col -= 1;
+        }
+    } else if (ev.key === "ArrowRight") {
+        let canMove = currentFigure.col + currentFigure.obj.cells[0].length <  TETRIS_COLS
+            && !checkForCollision(currentFigure.row, currentFigure.col + 1);
+        if (canMove) {
+            currentFigure.col += 1;
+        }
+    }
+})
