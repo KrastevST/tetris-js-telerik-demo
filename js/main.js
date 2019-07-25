@@ -2,17 +2,61 @@ const TETRIS_ROWS = 18;
 const TETRIS_COLS = 10;
 const TETRIS_CELL_SIZE = 32;
 
-const tetrisTable = Array.from({length: TETRIS_ROWS})
-    .map(() => Array.from({length: TETRIS_COLS}).map(() => false));
+const tetrisTable = Array.from({ length: TETRIS_ROWS })
+    .map(() => Array.from({ length: TETRIS_COLS }).map(() => false));
 
-tetrisTable.push(Array.from({length: TETRIS_COLS}).map(() => true));
+tetrisTable.push(Array.from({ length: TETRIS_COLS }).map(() => true));
 
 const figures = [
     {
+        color: "green",
+        cells: [
+            [1, 1],
+            [1, 1]
+        ]
+    },
+    {
         color: "red",
         cells: [
-            [1,1],
-            [1,1]
+            [1],
+            [1],
+            [1],
+            [1]
+        ]
+    },
+    {
+        color: "blue",
+        cells: [
+            [1, 1, 0],
+            [0, 1, 1]
+        ]
+    },
+    {
+        color: "blue",
+        cells: [
+            [0, 1, 1],
+            [1, 1, 0]
+        ]
+    },
+    {
+        color: "purple",
+        cells: [
+            [1, 1, 1],
+            [1, 0, 0]
+        ]
+    },
+    {
+        color: "purple",
+        cells: [
+            [1, 1, 1],
+            [0, 0, 1]
+        ]
+    },
+    {
+        color: "brown",
+        cells: [
+            [1, 1, 1],
+            [0, 1, 0]
         ]
     },
 ];
@@ -41,7 +85,7 @@ function getFigure() {
 }
 
 function checkForCollision(offsetRow, offsetCol) {
-    for (let i = 0; i < currentFigure.obj.cells.length; i += 1){
+    for (let i = 0; i < currentFigure.obj.cells.length; i += 1) {
         const row = offsetRow + i;
         for (let j = 0; j < currentFigure.obj.cells[i].length; j += 1) {
             const col = offsetCol + j;
@@ -61,11 +105,11 @@ function update() {
         currentFigure.row += 1;
     }
     else {
-        for (let i = 0; i < currentFigure.obj.cells.length; i += 1){
+        for (let i = 0; i < currentFigure.obj.cells.length; i += 1) {
             const row = currentFigure.row + i;
             for (let j = 0; j < currentFigure.obj.cells[i].length; j += 1) {
                 const col = currentFigure.col + j;
-    
+
                 if (currentFigure.obj.cells[i][j]) {
                     tetrisTable[row][col] = currentFigure.obj.color;
                 }
@@ -80,14 +124,14 @@ function update() {
 getFigure();
 update();
 
-window.addEventListener("keydown", function(ev) {
+window.addEventListener("keydown", function (ev) {
     if (ev.key === "ArrowLeft") {
         let canMove = currentFigure.col > 0 && !checkForCollision(currentFigure.row, currentFigure.col - 1);
         if (canMove) {
             currentFigure.col -= 1;
         }
     } else if (ev.key === "ArrowRight") {
-        let canMove = currentFigure.col + currentFigure.obj.cells[0].length <  TETRIS_COLS
+        let canMove = currentFigure.col + currentFigure.obj.cells[0].length < TETRIS_COLS
             && !checkForCollision(currentFigure.row, currentFigure.col + 1);
         if (canMove) {
             currentFigure.col += 1;
