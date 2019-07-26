@@ -78,12 +78,13 @@ const figures = [
 
 let gameSpeed = 1;
 let gameSpeedOverride = 0;
+let gameOn = true;
 
 function getFigure() {
     const index = Math.random() * figures.length | 0;
     currentFigure.obj = figures[index];
     currentFigure.row = -figures[index].cells.length;
-    currentFigure.col = 0;
+    currentFigure.col = (TETRIS_COLS - figures[index].cells[0].length) / 2 | 0;
 }
 
 function checkForCollision(offsetRow, offsetCol, matrix) {
@@ -107,14 +108,29 @@ function checkForCollision(offsetRow, offsetCol, matrix) {
 let gameScore = 0;
 const scoreSystem = [0, 10, 15, 20, 25];
 
+const startTime = new Date();
+
 function update() {
+    if(!gameOn) {
+        return;
+    }
     let canFall = !checkForCollision(currentFigure.row + 1, currentFigure.col, currentFigure.obj.cells)
 
     if (canFall) {
         currentFigure.row += 1;
     }
+    else if(currentFigure.row < 0) {
+        gameOn = false;
+        const secondsPlayed =  (new Date() - startTime) / 1000 | 0;
+        alert(`Game over!
+Your score is ${gameScore}.
+You lasted ${secondsPlayed} seconds.`)
+        return;
+    }
     else {
+        
         const filledRows = [];
+
         for (let i = 0; i < currentFigure.obj.cells.length; i += 1) {
             const row = currentFigure.row + i;
             for (let j = 0; j < currentFigure.obj.cells[i].length; j += 1) {
