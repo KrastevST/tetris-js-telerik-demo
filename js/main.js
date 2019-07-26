@@ -75,7 +75,8 @@ let currentFigure = {
     col: 0
 }
 
-let gameSpeed = 100;
+let gameSpeed = 1;
+let gameSpeedOverride = 0;
 
 function getFigure() {
     const index = Math.random() * figures.length | 0;
@@ -122,11 +123,16 @@ function update() {
         getFigure();
     }
 
-    setTimeout(update, gameSpeed);
+    const currentSpeed = gameSpeedOverride || gameSpeed;
+    setTimeout(update, 1000 / currentSpeed);
 }
 
 getFigure();
 update();
+
+setInterval(function() {
+    gameSpeed += 1;
+}, 60 * 1000);
 
 window.addEventListener("keydown", function (ev) {
     if (ev.key === "ArrowLeft") {
@@ -141,4 +147,18 @@ window.addEventListener("keydown", function (ev) {
             currentFigure.col += 1;
         }
     }
-})
+    else if (ev.key === "ArrowDown") {
+        gameSpeedOverride = 1000;
+    }
+    else if (ev.key === "q") {
+        currentFigure.obj.cells = getLeftRotation(currentFigure.obj.cells);
+    }
+    else if (ev.key === "w") {
+        currentFigure.obj.cells = getRightRotation(currentFigure.obj.cells);
+    }
+});
+
+window.addEventListener("keyup", function (ev) {
+    if (ev.key === "ArrowDown")
+    gameSpeedOverride = 0;
+}); 
